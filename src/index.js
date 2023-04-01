@@ -46,24 +46,38 @@ app.get('/', (req, res) => {
 
 app.get('/user', (req, res) => {
     try {
-        if (req.body.email) {
-            let user = users.find((u) => {
-                let hasEmail = u.emails.find((e) => e.email == req.body.email);
-                return hasEmail != undefined && hasEmail != null;
-            });
+
+        if (req.body.ra) {
+            let user = users.find((u) => u.ra == req.body.ra);
+
             if (!user) throw new Error('not found');
+
+            if (req.body.email) {
+                let checkEmail = user.emails.find((e) => e.email == req.body.email);
+
+                if (checkEmail == undefined && checkEmail == null) {
+                    res.statusCode = 200;
+                    res.end(JSON.stringify({ exists: false, user }));
+                    return null;
+                }
+
+                res.statusCode = 200;
+                res.end(JSON.stringify({ exists: true, user }));
+                return null;
+            }
+
+
+
+
+
             res.statusCode = 200;
             res.end(JSON.stringify(user));
             return null;
         }
 
-        if (req.body.ra) {
-            let user = users.find((u) => u.ra == req.body.ra);
-            if (!user) throw new Error('not found');
-            res.statusCode = 200;
-            res.end(JSON.stringify(user));
-            return null;
-        }
+
+
+
     } catch (err) {
         console.log(err.message);
     }
