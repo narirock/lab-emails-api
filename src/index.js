@@ -14,7 +14,8 @@ const users = [
         permissions: ["zoom", "canvas"],
         emails: [
             { email: "user1@primary.com", type: "principal" },
-            { email: "user1@secondary.com", type: "secondary" }
+            { email: "user1@secondary.com", type: "secondary" },
+            { type: "secondary" }
         ]
     },
     {
@@ -86,7 +87,6 @@ app.get('/user', (req, res) => {
     res.end('{}');
 });
 
-
 app.get('/user/set_email', (req, res) => {
     try {
         if (req.query.ra != '' && req.query.email != '') {
@@ -104,6 +104,28 @@ app.get('/user/set_email', (req, res) => {
     } catch (error) {
         res.statusCode = 500;
         res.end(error.message);
+    }
+})
+
+app.post('/user/login', (req, res) => {
+    if (req.body.password == '12345678' && req.body.email == "campus.aluno@acad.espm.br") {
+        res.statusCode = 200;
+        let user = {
+            'objectId': '75c91163-9695-4cfb-8de5-26bfc4c15cd7',
+            'email_Addr': 'campus.aluno@acad.espm.br',
+            'emplid': '100001',
+            'oprid': 'ESPM_ALUNO_TEMPLATE',
+            'tid': 'f748bd15-bcb6-447e-a38d-dd3ed9c4cc2f',
+            'userPrincipalName': 'campus.aluno@acad.espm.br',
+            'givenName': 'Nome',
+            'surName': 'Sobrenome',
+            'displayName': 'Nome',
+            'issuerUserId': '16b40b53-bc73-44d5-ae9c-e1613427de09'
+        };
+        res.end(JSON.stringify(user));
+    } else {
+        res.statusCode = 400;
+        res.end('User not found');
     }
 })
 
